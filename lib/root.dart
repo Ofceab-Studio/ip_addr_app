@@ -12,6 +12,7 @@ class Root extends StatelessWidget {
     return BlocProvider(
       create: (context) => locator.get<IpAddrCubit>(),
       child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: MainScreen(),
       ),
     );

@@ -12,7 +12,6 @@ class IpAddrCubit extends Cubit<IpAddrState> {
   }
 
   Future<void> fetchIpAddr() async {
-    print("Start fetching addr");
     emit(IpAddrIsProcessing());
     Timer(const Duration(milliseconds: 200), () async {
       final netw = NetWorkModule().netw;
