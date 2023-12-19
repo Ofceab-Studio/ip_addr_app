@@ -104,3 +104,4 @@ flutter:
 scripts:
   gen-w: ".fvm/flutter_sdk/bin/flutter pub run build_runner watch"
   gen-b: ".fvm/flutter_sdk/bin/flutter pub run build_runner build"
+  build: ".fvm/flutter_sdk/bin/flutter build apk --split-per-abi"
