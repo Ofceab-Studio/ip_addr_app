@@ -7,4 +7,5 @@
     android:minResizeHeight="80dp"
     android:targetCellWidth="3"
     android:targetCellHeight="3"
+    android:updatePeriodMillis="1000"
     android:widgetCategory="home_screen" />

@@ -14,16 +14,14 @@ class IpAddrCubit extends Cubit<IpAddrState> {
 
   Future<void> fetchIpAddr() async {
     emit(IpAddrIsProcessing());
-    Timer(const Duration(milliseconds: 200), () async {
-      final netw = _networkModule.getNetworkInfo();
-      final ip = await netw.getWifiIP();
-      if (ip != null) {
-        emit(IpAddrDone(ip));
-        _updateWidget(ip);
-      } else {
-        emit(IpAddrFailed());
-      }
-    });
+    final netw = _networkModule.getNetworkInfo();
+    final ip = await netw.getWifiIP();
+    if (ip != null) {
+      emit(IpAddrDone(ip));
+      _updateWidget(ip);
+    } else {
+      emit(IpAddrFailed());
+    }
   }
 
   Future<void> _updateWidget(String ip) async {
