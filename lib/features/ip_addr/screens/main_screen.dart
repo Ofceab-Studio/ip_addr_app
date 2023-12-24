@@ -17,6 +17,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late final StreamSubscription status;
+  final ValueNotifier<bool> _isDisable = ValueNotifier(false);
 
   @override
   void initState() {
@@ -34,22 +35,41 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<IpAddrCubit, IpAddrState>(
-        builder: (context, state) {
-          if (state is IpAddrInitialState || state is IpAddrIsProcessing) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is IpAddrDone) {
-            return Center(
-              child: _buildIpAddr(context, state.ipAddr),
-            );
-          } else {
-            return const Center(
-              child: Text("Something wrong"),
-            );
-          }
-        },
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(),
+            BlocBuilder<IpAddrCubit, IpAddrState>(
+              builder: (context, state) {
+                if (state is IpAddrInitialState ||
+                    state is IpAddrIsProcessing) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is IpAddrDone) {
+                  return Center(
+                    child: _buildIpAddr(context, state.ipAddr),
+                  );
+                } else {
+                  return const Center(
+                    child: Text("Something wrong"),
+                  );
+                }
+              },
+            ),
+            ListenableBuilder(
+                listenable: _isDisable,
+                builder: (context, _) {
+                  if (_isDisable.value) {
+                    return _buildHintWidget(context, _buildIcon(context));
+                  }
+                  return _buildHintWidget(context, _buildTextWithIcon(context));
+                }),
+          ],
+        ),
       ),
     );
   }
@@ -71,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
         const SizedBox(
           height: 15,
         ),
-        Text(ipAddr, style: const TextStyle(fontSize: 16)),
+        Text(ipAddr, style: const TextStyle(fontSize: 24)),
         const SizedBox(
           height: 15,
         ),
@@ -83,5 +103,38 @@ class _MainScreenState extends State<MainScreen> {
         )
       ],
     );
+  }
+
+  Widget _buildHintWidget(BuildContext context, List<Widget> widgets) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: widgets,
+    );
+  }
+
+  List<Widget> _buildTextWithIcon(BuildContext context) {
+    return [
+      const Text(
+        "There is a widget available for app. try it!",
+        style: TextStyle(fontSize: 16),
+      ),
+      const SizedBox(
+        width: 10,
+      ),
+      InkWell(
+        onTap: () => _isDisable.value = !_isDisable.value,
+        child: const Icon(Icons.close),
+      )
+    ];
+  }
+
+  List<Widget> _buildIcon(BuildContext context) {
+    return [
+      InkWell(
+        onTap: () => _isDisable.value = !_isDisable.value,
+        child: const Icon(Icons.info),
+      )
+    ];
   }
 }
