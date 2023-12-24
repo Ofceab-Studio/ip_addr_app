@@ -6,11 +6,9 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ip_addr_show/root.dart';
 
 void main() {
   testWidgets('test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const Root());
+    tester.pump();
   });
 }

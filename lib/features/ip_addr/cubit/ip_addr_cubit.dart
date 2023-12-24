@@ -7,22 +7,21 @@ import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
 
 @Singleton()
 class IpAddrCubit extends Cubit<IpAddrState> {
-  IpAddrCubit() : super(IpAddrInitialState()) {
+  final INetworkModule _networkModule;
+  IpAddrCubit(this._networkModule) : super(IpAddrInitialState()) {
     fetchIpAddr();
   }
 
   Future<void> fetchIpAddr() async {
     emit(IpAddrIsProcessing());
-    Timer(const Duration(milliseconds: 200), () async {
-      final netw = NetWorkModule().netw;
-      final ip = await netw.getWifiIP();
-      if (ip != null) {
-        emit(IpAddrDone(ip));
-        _updateWidget(ip);
-      } else {
-        emit(IpAddrFailed());
-      }
-    });
+    final netw = _networkModule.getNetworkInfo();
+    final ip = await netw.getWifiIP();
+    if (ip != null) {
+      emit(IpAddrDone(ip));
+      _updateWidget(ip);
+    } else {
+      emit(IpAddrFailed());
+    }
   }
 
   Future<void> _updateWidget(String ip) async {

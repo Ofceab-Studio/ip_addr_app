@@ -47,6 +47,8 @@ dependencies:
   network_info_plus: ^4.1.0
   home_widget: ^0.4.1
   flutter_launcher_icons: ^0.13.1
+  dartz: ^0.10.1
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:
