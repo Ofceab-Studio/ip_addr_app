@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="Ip Addr Show"
+        android:label="IP"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
@@ -29,5 +29,27 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Receiver for widget here -->
+        <receiver android:name="WidgetProvider" 
+              android:exported="true"
+             >
+           <intent-filter>
+               <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+           </intent-filter>
+           <meta-data android:name="android.appwidget.provider"
+               android:resource="@xml/widget_info" />
+       </receiver>
+
+        <!-- Another receiver for background job  -->
+        <receiver android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+        android:exported="true">
+           <intent-filter>
+               <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
+           </intent-filter>
+       </receiver>
+       <service android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
+           android:permission="android.permission.BIND_JOB_SERVICE" 
+           android:exported="true"/>
     </application>
 </manifest>
