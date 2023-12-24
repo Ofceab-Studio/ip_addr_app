@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../../di.dart';
 
 class MainScreen extends StatefulWidget {
@@ -14,11 +16,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late final StreamSubscription status;
+
   @override
   void initState() {
-    // Timer.periodic(const Duration(seconds: 2), (timer) {
-    //   locator.get<IpAddrCubit>().fetchIpAddr();
-    //  });
+    status = Connectivity().onConnectivityChanged.listen((event) {
+      locator.get<IpAddrCubit>().fetchIpAddr();
+    });
     super.initState();
   }
 
