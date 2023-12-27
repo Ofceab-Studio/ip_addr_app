@@ -16,6 +16,12 @@ jobs:
       image: ghcr.io/cirruslabs/flutter:latest
 
     steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Test de l'application IP a demaré ... !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}" 
+
       - uses: actions/checkout@v3
 
       # Note: This workflow uses the latest stable version of the Dart SDK.
