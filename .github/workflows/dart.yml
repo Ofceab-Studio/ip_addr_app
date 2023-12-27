@@ -45,3 +45,55 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: flutter test
+
+  build:
+    if: ${{ success() }}
+    needs: test
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cirruslabs/flutter:latest
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Test du nouveau commit sur la branch ${{ github.head_ref }} par @${{ github.actor }} est passé 🥳 !!!\Le build est en cour ..."
+
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Build application
+        run: flutter build apk --split-per-abi
+      
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Build de l'application IP a reussi 😎 !!!\nBranche ${{ github.head_ref }} par @${{ github.actor }}"
+      - name: Send apk
+        run: curl -F document=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk "https://api.telegram.org/bot${{ secrets.TOKEN }}/sendDocument?chat_id=${{ secrets.CHATID }}" 
+                  
+              
+
+  onTestFailed:
+    if: ${{ failure() }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Test de l'application IP a echoué 😔 !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}"
+
+  onBuildFailed:
+    if: ${{ failure() }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Build de l'application IP a echoué 😔 !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}"
+        
