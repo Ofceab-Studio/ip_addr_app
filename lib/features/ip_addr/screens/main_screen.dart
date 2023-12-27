@@ -1,14 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:injectable/injectable.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:ip_addr_show/local_notification_config.dart';
+import 'package:ip_addr_show/core/modules/local_notification_config.dart';
 import '../../../di.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,23 +17,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late final StreamSubscription status;
   final ValueNotifier<bool> _isDisable = ValueNotifier(false);
-
-  var _ipValue = "";
+  final Connectivity conn = locator.get<Connectivity>(instanceName: 'conn');
 
   @override
   void initState() {
-    final conn = Connectivity();
-    status = conn.onConnectivityChanged.listen((event) {
-      _sendNofitication();
+    conn.onConnectivityChanged.listen((event) {
       locator.get<IpAddrCubit>().fetchIpAddr();
+      _sendNofitication();
     });
     super.initState();
   }
 
   @override
   void dispose() {
+    _isDisable.dispose();
     super.dispose();
   }
 
@@ -57,7 +53,6 @@ class _MainScreenState extends State<MainScreen> {
                     child: CircularProgressIndicator(),
                   );
                 } else if (state is IpAddrDone) {
-                  _ipValue = state.ipAddr.toString();
                   return Center(
                     child: _buildIpAddr(context, state.ipAddr),
                   );
@@ -150,6 +145,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _sendNofitication() async {
+    await requestPermission();
     final plugin = locator.get<INotificationModule>().plugin
         as FlutterLocalNotificationsPlugin;
     const AndroidNotificationDetails androidNotificationDetails =
@@ -162,8 +158,8 @@ class _MainScreenState extends State<MainScreen> {
         NotificationDetails(android: androidNotificationDetails);
     await plugin.show(
       0,
-      'IP v1',
-      'Your IP   is now $_ipValue\nSee IP widget to save your time !!!',
+      'Your ip address changed bro',
+      'See ip widget to save your time !!!',
       notificationDetails,
     );
   }

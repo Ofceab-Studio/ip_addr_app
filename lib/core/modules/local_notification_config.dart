@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:ip_addr_show/core/extensions/context_extension.dart';
 import 'package:ip_addr_show/di.dart';
 import 'package:ip_addr_show/root.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 abstract class INotificationModule {
   get plugin;
@@ -17,7 +18,7 @@ class LocalNotificationModule implements INotificationModule {
 
 Future<void> initializeLocalNotification() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
+      AndroidInitializationSettings('ic_launcher_background');
 
   const LinuxInitializationSettings initializationSettingsLinux =
       LinuxInitializationSettings(defaultActionName: 'Open notification');
@@ -34,5 +35,12 @@ Future<void> initializeLocalNotification() async {
   } else {
     navKey.currentContext
         ?.showSnackBar("Unable to initialize local notification plugin");
+  }
+}
+
+Future<void> requestPermission() async {
+  final status = await Permission.notification.isDenied;
+  if (status) {
+    Permission.notification.request();
   }
 }
