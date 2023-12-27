@@ -93,5 +93,4 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Build de l'application IP a echoué 😔 !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}"
-        
+          message: "Le Build de l'application IP a echoué 😔 !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}"        
