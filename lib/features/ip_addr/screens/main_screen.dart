@@ -100,7 +100,6 @@ class _MainScreenState extends State<MainScreen> {
         ),
         InkWell(
           onTap: () async {
-            _sendNofitication();
             locator<IpAddrCubit>().fetchIpAddr();
           },
           child: Container(
