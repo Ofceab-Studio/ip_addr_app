@@ -45,3 +45,27 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: flutter test
+  succes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Build application
+        run: flutter build apk --split-per-abi
+      
+      - uses: appleboy/telegram-action@master
+        with:
+          to: "905831171"
+          token: "6275666443:AAFOpt-zMGHYc-tihw8tSprZ1guzVsmJCF0"
+          message: "Build Succes"
+
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: "905831171"
+          token: "6275666443:AAFOpt-zMGHYc-tihw8tSprZ1guzVsmJCF0"
+          message: "Build Failed"
+        
