@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:injectable/injectable.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:ip_addr_show/local_notification_config.dart';
 import '../../../di.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,9 +22,13 @@ class _MainScreenState extends State<MainScreen> {
   late final StreamSubscription status;
   final ValueNotifier<bool> _isDisable = ValueNotifier(false);
 
+  var _ipValue = "";
+
   @override
   void initState() {
-    status = Connectivity().onConnectivityChanged.listen((event) {
+    final conn = Connectivity();
+    status = conn.onConnectivityChanged.listen((event) {
+      _sendNofitication();
       locator.get<IpAddrCubit>().fetchIpAddr();
     });
     super.initState();
@@ -50,6 +57,7 @@ class _MainScreenState extends State<MainScreen> {
                     child: CircularProgressIndicator(),
                   );
                 } else if (state is IpAddrDone) {
+                  _ipValue = state.ipAddr.toString();
                   return Center(
                     child: _buildIpAddr(context, state.ipAddr),
                   );
@@ -96,7 +104,10 @@ class _MainScreenState extends State<MainScreen> {
           height: 15,
         ),
         InkWell(
-          onTap: () => locator<IpAddrCubit>().fetchIpAddr(),
+          onTap: () async {
+            _sendNofitication();
+            locator<IpAddrCubit>().fetchIpAddr();
+          },
           child: Container(
               padding: const EdgeInsets.all(10),
               child: const Icon(Icons.replay_outlined)),
@@ -136,5 +147,24 @@ class _MainScreenState extends State<MainScreen> {
         child: const Icon(Icons.info),
       )
     ];
+  }
+
+  Future<void> _sendNofitication() async {
+    final plugin = locator.get<INotificationModule>().plugin
+        as FlutterLocalNotificationsPlugin;
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails("0", 'IPChannelName',
+            channelDescription: 'IPChannelName',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await plugin.show(
+      0,
+      'IP v1',
+      'Your IP   is now $_ipValue\nSee IP widget to save your time !!!',
+      notificationDetails,
+    );
   }
 }

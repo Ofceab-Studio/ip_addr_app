@@ -4,6 +4,8 @@ import 'package:ip_addr_show/di.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/screens/main_screen.dart';
 
+final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+
 class Root extends StatelessWidget {
   const Root({super.key});
 
@@ -11,9 +13,10 @@ class Root extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => locator.get<IpAddrCubit>(),
-      child: const MaterialApp(
+      child: MaterialApp(
+        navigatorKey: navKey,
         debugShowCheckedModeBanner: false,
-        home: MainScreen(),
+        home: const MainScreen(),
       ),
     );
   }
