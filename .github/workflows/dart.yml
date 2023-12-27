@@ -45,6 +45,7 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: flutter test
+
   succes:
     if: ${{ success() }}
     needs: test
@@ -52,6 +53,12 @@ jobs:
     container:
       image: ghcr.io/cirruslabs/flutter:latest
     steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Test de du commit #${{ github.head_ref }} par @${{ github.actor }} sur la branch ${{ github.ref }} a reussi :party: !!!"
+
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
@@ -60,9 +67,9 @@ jobs:
       
       - uses: appleboy/telegram-action@master
         with:
-          to: "905831171"
-          token: "6275666443:AAFOpt-zMGHYc-tihw8tSprZ1guzVsmJCF0"
-          message: "Le Build de l'application Ip a reussi :sunglasses !!!"
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Build de l'application Ip a reussi :sunglasses: !!!\nCommit #${{ github.head_ref }} par @${{ github.actor }} sur la branch ${{ github.ref }}"
 
   fail:
     if: ${{ failure() }}
@@ -71,7 +78,7 @@ jobs:
     steps:
       - uses: appleboy/telegram-action@master
         with:
-          to: "905831171"
-          token: "6275666443:AAFOpt-zMGHYc-tihw8tSprZ1guzVsmJCF0"
-          message: "Le Test de l'application IP a echoué !!!"
+          to: ${{ secrets.CHATID }}
+          token: ${{ secrets.TOKEN }}
+          message: "Le Test de l'application IP a echoué :pensive: !!!\nCommit #${{ github.head_ref }} par @${{ github.actor }} sur la branch ${{ github.ref }}"
         
