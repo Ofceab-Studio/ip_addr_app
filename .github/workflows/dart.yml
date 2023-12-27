@@ -46,7 +46,7 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  succes:
+  build:
     if: ${{ success() }}
     needs: test
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Test du nouveau commit sur la branch ${{ github.ref_name }} par @${{ github.actor }} a reussi 🥳 !!!"
+          message: "Le Test du nouveau commit sur la branch ${{ github.head_ref }} par @${{ github.actor }} a reussi 🥳 !!!"
 
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
@@ -69,12 +69,10 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Build de l'application Ip a reussi 😎 !!!\nBranche #${{ github.ref_name }} par @${{ github.actor }}"
+          message: "Le Build de l'application Ip a reussi 😎 !!!\nBranche #${{ github.head_ref }} par @${{ github.actor }}"
       - name: Send apk
-        run: curl -s -X POST "https://api.telegram.org/bot${{ secrets.TOKEN }}/sendDocument" \
-              -F "chat_id=${{ secrets.CHATID }}" \
-              -F "document=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk \
-              -F "caption="IP.apk""         
+        run: curl -F document=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk "https://api.telegram.org/bot${{ secrets.TOKEN }}/sendDocument?chat_id=${{ secrets.CHATID }}" 
+                  
               
 
   fail:
@@ -86,5 +84,5 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Test de l'application IP a echoué 😔 !!!\nBranch #${{ github.ref_name }} par @${{ github.actor }}"
+          message: "Le Test de l'application IP a echoué 😔 !!!\nBranch #${{ github.head_ref }} par @${{ github.actor }}"
         
