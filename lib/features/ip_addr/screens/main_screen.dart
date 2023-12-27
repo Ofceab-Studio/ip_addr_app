@@ -1,11 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:ip_addr_show/core/modules/local_notification_config.dart';
 import '../../../di.dart';
 
 class MainScreen extends StatefulWidget {
@@ -16,19 +17,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late final StreamSubscription status;
   final ValueNotifier<bool> _isDisable = ValueNotifier(false);
+  final Connectivity conn = locator.get<Connectivity>(instanceName: 'conn');
 
   @override
   void initState() {
-    status = Connectivity().onConnectivityChanged.listen((event) {
+    conn.onConnectivityChanged.listen((event) {
       locator.get<IpAddrCubit>().fetchIpAddr();
+      _sendNofitication();
     });
     super.initState();
   }
 
   @override
   void dispose() {
+    _isDisable.dispose();
     super.dispose();
   }
 
@@ -96,7 +99,10 @@ class _MainScreenState extends State<MainScreen> {
           height: 15,
         ),
         InkWell(
-          onTap: () => locator<IpAddrCubit>().fetchIpAddr(),
+          onTap: () async {
+            _sendNofitication();
+            locator<IpAddrCubit>().fetchIpAddr();
+          },
           child: Container(
               padding: const EdgeInsets.all(10),
               child: const Icon(Icons.replay_outlined)),
@@ -136,5 +142,25 @@ class _MainScreenState extends State<MainScreen> {
         child: const Icon(Icons.info),
       )
     ];
+  }
+
+  Future<void> _sendNofitication() async {
+    await requestPermission();
+    final plugin = locator.get<INotificationModule>().plugin
+        as FlutterLocalNotificationsPlugin;
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails("0", 'IPChannelName',
+            channelDescription: 'IPChannelName',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await plugin.show(
+      0,
+      'Your ip address changed bro',
+      'See ip widget to save your time !!!',
+      notificationDetails,
+    );
   }
 }
