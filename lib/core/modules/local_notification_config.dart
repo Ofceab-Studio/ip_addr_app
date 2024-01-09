@@ -44,3 +44,23 @@ Future<void> requestPermission() async {
     Permission.notification.request();
   }
 }
+
+Future<void> sendNofitication() async {
+  await requestPermission();
+  final plugin = locator.get<INotificationModule>().plugin
+      as FlutterLocalNotificationsPlugin;
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails("0", 'IPChannelName',
+          channelDescription: 'IPChannelName',
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker');
+  const NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
+  await plugin.show(
+    0,
+    'Your ip address changed bro',
+    'See ip widget to save your time !!!',
+    notificationDetails,
+  );
+}

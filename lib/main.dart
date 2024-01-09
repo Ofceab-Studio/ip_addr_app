@@ -6,7 +6,7 @@ import 'root.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await requestPermission();
+  await requestPermission();
 
   configureDependencies();
   await initializeLocalNotification();
