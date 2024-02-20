@@ -27,3 +27,13 @@ class SendToChannelsProcessing extends SendIpState {
   @override
   List<Object?> get props => [];
 }
+
+class CredentialDone extends SendIpState {
+  @override
+  List<Object?> get props => [];
+}
+
+class CredentialFailed extends SendIpState {
+  @override
+  List<Object?> get props => [];
+}
