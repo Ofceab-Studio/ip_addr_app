@@ -1,0 +1,1 @@
+Little application that show your ip address via home widget and send you telegram message that containt shortcut like "adb connect x.x.x.x:5555".

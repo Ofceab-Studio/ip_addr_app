@@ -50,6 +50,9 @@ dependencies:
   dartz: ^0.10.1
   connectivity_plus: ^5.0.2
   flutter_local_notifications: ^16.2.0
+  loggme: 
+    git:
+      url: https://github.com/Ofceab-Studio/loggme.git
 
 dev_dependencies:
   flutter_test:
