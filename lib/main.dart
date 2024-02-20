@@ -9,6 +9,7 @@ Future<void> main() async {
   await requestPermission();
 
   configureDependencies();
+
   await initializeLocalNotification();
 
   runApp(const Root());

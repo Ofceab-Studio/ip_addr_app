@@ -5,6 +5,7 @@ import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ip_addr_show/core/modules/local_notification_config.dart';
+import 'package:ip_addr_show/features/send_ip_to_channels/widget/sender_widget.dart';
 import '../../../di.dart';
 
 class MainScreen extends StatefulWidget {
@@ -83,32 +84,40 @@ class _MainScreenState extends State<MainScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        InkWell(
-          onTap: () async {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Copied to clipboad")));
-            await Clipboard.setData(ClipboardData(text: ipAddr));
-          },
-          child: Container(
-              padding: const EdgeInsets.all(10), child: const Icon(Icons.copy)),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
         Text(ipAddr, style: const TextStyle(fontSize: 24)),
-        const SizedBox(
-          height: 15,
-        ),
-        InkWell(
-          onTap: () async {
-            locator<IpAddrCubit>().fetchIpAddr();
-          },
-          child: Container(
-              padding: const EdgeInsets.all(10),
-              child: const Icon(Icons.replay_outlined)),
-        )
+        _buildActions(context, ipAddr),
       ],
     );
+  }
+
+  InkWell _refreshIp() {
+    return InkWell(
+      onTap: () async {
+        locator<IpAddrCubit>().fetchIpAddr();
+      },
+      child: Container(
+          padding: const EdgeInsets.all(10),
+          child: const Icon(Icons.replay_outlined)),
+    );
+  }
+
+  InkWell _copieToClipBoard(BuildContext context, String ipAddr) {
+    return InkWell(
+      onTap: () async {
+        ScaffoldMessenger.of(context).showSnackBar(_snack());
+        await Clipboard.setData(ClipboardData(text: ipAddr));
+      },
+      child: Container(
+          padding: const EdgeInsets.all(10), child: const Icon(Icons.copy)),
+    );
+  }
+
+  SnackBar _snack() {
+    return const SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(bottom: 70, left: 20, right: 20),
+        showCloseIcon: true,
+        content: Text("Copied to clipboad"));
   }
 
   Widget _buildHintWidget(BuildContext context, List<Widget> widgets) {
@@ -142,5 +151,22 @@ class _MainScreenState extends State<MainScreen> {
         child: const Icon(Icons.info),
       )
     ];
+  }
+
+  Row _buildActions(BuildContext context, String ipAddr) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _copieToClipBoard(context, ipAddr),
+        _buildSender(context, ipAddr),
+        _refreshIp()
+      ],
+    );
+  }
+
+  Widget _buildSender(BuildContext context, String ipAddr) {
+    return SenderWidget(
+      ipAddr: ipAddr,
+    );
   }
 }
