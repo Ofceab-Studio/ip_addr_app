@@ -5,8 +5,9 @@ import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_cubit.dart';
 import 'package:ip_addr_show/features/ip_addr/cubit/ip_addr_state.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ip_addr_show/core/modules/local_notification_config.dart';
-import 'package:ip_addr_show/features/send_ip_to_channels/widget/sender_widget.dart';
+import 'package:ip_addr_show/features/send_ip_to_channels/widgets/sender_widget.dart';
 import '../../../di.dart';
+import '../widgets/snack_widget.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -104,20 +105,13 @@ class _MainScreenState extends State<MainScreen> {
   InkWell _copieToClipBoard(BuildContext context, String ipAddr) {
     return InkWell(
       onTap: () async {
-        ScaffoldMessenger.of(context).showSnackBar(_snack());
+        ScaffoldMessenger.of(context)
+            .showSnackBar(snack(const Text("Copied to clipboad")));
         await Clipboard.setData(ClipboardData(text: ipAddr));
       },
       child: Container(
           padding: const EdgeInsets.all(10), child: const Icon(Icons.copy)),
     );
-  }
-
-  SnackBar _snack() {
-    return const SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(bottom: 70, left: 20, right: 20),
-        showCloseIcon: true,
-        content: Text("Copied to clipboad"));
   }
 
   Widget _buildHintWidget(BuildContext context, List<Widget> widgets) {
