@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -21,28 +22,34 @@ class SendIpCubit extends Cubit<SendIpState> {
   SendIpCubit(this.senderModule) : super(InitialState());
 
   Future<void> sendIpToChannels(
-      {required String botId,
-      required String chatId,
-      required String ipAddr,
-      bool? fromSendTutton}) async {
+      {required String ipAddr, bool? fromSendButton}) async {
     emit(SendToChannelsProcessing());
+    await _tryCatch(fromSendButton, ipAddr);
+    emit(SendToChannelsDone(ipAddr));
+  }
+
+  Future<void> _tryCatch(bool? fromSendButton, String ipAddr) async {
     try {
       if (await verifyCredentials()) {
         emit(CredentialDone());
-        await _sendIp(fromSendTutton, ipAddr, botId, chatId);
+        // Get Credentials
+        final botId =
+            await locator.get<IStorageHelper>().getData(isChatId: false);
+        final chatId =
+            await locator.get<IStorageHelper>().getData(isChatId: true);
+        await _sendIp(fromSendButton, ipAddr, botId!, chatId!);
       } else {
         emit(CredentialFailed());
       }
     } catch (e) {
       emit(SendToChannelsFailed(e.toString()));
     }
-    emit(SendToChannelsDone(ipAddr));
   }
 
   Future<void> _sendIp(
-      bool? fromSendTutton, String ipAddr, String botId, String chatId) async {
+      bool? fromSendButton, String ipAddr, String botId, String chatId) async {
     final message = TelegramLoggMessage()
-      ..addBoldText(fromSendTutton == null
+      ..addBoldText(fromSendButton == null
           ? "${ChannelsMessages.formSendButtonClicked.message} $ipAddr"
           : "${ChannelsMessages.fromConnectionListener.message} $ipAddr")
       ..addNormalText("\n")
@@ -53,12 +60,16 @@ class SendIpCubit extends Cubit<SendIpState> {
   }
 
   Future<bool> verifyCredentials() async {
-    return await locator.get<IStorageHelper>().getData();
+    log("Verifing credentials");
+    final result = await locator.get<IStorageHelper>().makeVerification();
+    log(result.toString());
+    return result;
   }
 
   Future<void> saveCredentials(
       {required String botId, required String chatId}) async {
-    await locator.get<IStorageHelper>().saveData(botId);
-    await locator.get<IStorageHelper>().saveData(chatId);
+    log("Start saving credentials");
+    await locator.get<IStorageHelper>().saveData(botId, true);
+    await locator.get<IStorageHelper>().saveData(chatId, false);
   }
 }

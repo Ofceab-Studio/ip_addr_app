@@ -4,10 +4,10 @@ import 'package:ip_addr_show/features/send_ip_to_channels/forms/credentials_form
 Future<void> showCredentialsDialog(BuildContext context) async {
   return showDialog(
       context: context,
-      builder: (context) => Container(
-            decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.white),
-            child: const CredentialForm(),
-          ));
+      builder: (context) => Dialog(
+          child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              height: 280,
+              child: const CredentialForm())));
 }

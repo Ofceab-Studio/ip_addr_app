@@ -75,7 +75,7 @@ jobs:
           token: ${{ secrets.TOKEN }}
           message: "Le Build de l'application IP a reussi 😎 !!!\nBranche ${{ github.head_ref }} par @${{ github.actor }}"
       - name: Send apk
-        run: curl -F document=@build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk "https://api.telegram.org/bot${{ secrets.TOKEN }}/sendDocument?chat_id=${{ secrets.CHATID }}" 
+        run: curl -F document=@build/app/outputs/flutter-apk/app-armeabi-v8a-release.apk "https://api.telegram.org/bot${{ secrets.TOKEN }}/sendDocument?chat_id=${{ secrets.CHATID }}" 
                   
               
 

