@@ -18,6 +18,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ValueNotifier<bool> _isDisable = ValueNotifier(false);
+  final ValueNotifier<String> _ipAddr = ValueNotifier("");
 
   @override
   void initState() {
@@ -47,25 +48,7 @@ class _MainScreenState extends State<MainScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const SizedBox(),
-            BlocBuilder<IpAddrCubit, IpAddrState>(
-              builder: (context, state) {
-                if (state is IpAddrInitialState ||
-                    state is IpAddrIsProcessing) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is IpAddrDone) {
-                  return Center(
-                    child: _buildIpAddr(context, state.ipAddr),
-                  );
-                } else if (state is IpAddrFailed) {
-                  return const Center(
-                    child: Text("Something wrong"),
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
+            _buildIpAddrWithActions(),
             ListenableBuilder(
                 listenable: _isDisable,
                 builder: (context, _) {
@@ -80,13 +63,14 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildIpAddr(BuildContext context, String ipAddr) {
+  Widget _buildIpAddr(
+    BuildContext context,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(ipAddr, style: const TextStyle(fontSize: 24)),
-        _buildActions(context, ipAddr),
+        Text(_ipAddr.value, style: const TextStyle(fontSize: 24)),
       ],
     );
   }
@@ -102,12 +86,12 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  InkWell _copieToClipBoard(BuildContext context, String ipAddr) {
+  InkWell _copieToClipBoard(BuildContext context) {
     return InkWell(
       onTap: () async {
         ScaffoldMessenger.of(context)
             .showSnackBar(snack(const Text("Copied to clipboad")));
-        await Clipboard.setData(ClipboardData(text: ipAddr));
+        await Clipboard.setData(ClipboardData(text: _ipAddr.value));
       },
       child: Container(
           padding: const EdgeInsets.all(10), child: const Icon(Icons.copy)),
@@ -147,20 +131,50 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
-  Row _buildActions(BuildContext context, String ipAddr) {
+  Row _buildActions(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _copieToClipBoard(context, ipAddr),
-        _buildSender(context, ipAddr),
+        _copieToClipBoard(context),
+        _buildSender(context),
         _refreshIp()
       ],
     );
   }
 
-  Widget _buildSender(BuildContext context, String ipAddr) {
+  Widget _buildSender(BuildContext context) {
     return SenderWidget(
-      ipAddr: ipAddr,
+      ipAddr: _ipAddr.value,
+    );
+  }
+
+  Wrap _buildIpAddrWithActions() {
+    return Wrap(
+      runSpacing: 5,
+      children: <Widget>[
+        BlocBuilder<IpAddrCubit, IpAddrState>(
+          builder: (context, state) {
+            if (state is IpAddrInitialState || state is IpAddrIsProcessing) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+              );
+            } else if (state is IpAddrDone) {
+              _ipAddr.value = state.ipAddr;
+              return Center(
+                child: _buildIpAddr(context),
+              );
+            } else if (state is IpAddrFailed) {
+              return const Center(
+                child: Text("Something wrong"),
+              );
+            }
+            return _buildActions(context);
+          },
+        ),
+        _buildActions(context)
+      ],
     );
   }
 }
