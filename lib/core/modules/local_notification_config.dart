@@ -38,7 +38,7 @@ Future<void> initializeLocalNotification() async {
   }
 }
 
-Future<void> requestPermission() async {
+Future<void> requestNotificationPermission() async {
   final status = await Permission.notification.isDenied;
   if (status) {
     Permission.notification.request();
@@ -46,7 +46,7 @@ Future<void> requestPermission() async {
 }
 
 Future<void> sendNofitication() async {
-  await requestPermission();
+  await requestNotificationPermission();
   final plugin = locator.get<INotificationModule>().plugin
       as FlutterLocalNotificationsPlugin;
   const AndroidNotificationDetails androidNotificationDetails =

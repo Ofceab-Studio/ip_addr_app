@@ -29,40 +29,20 @@ class _CredentialFormState extends State<CredentialForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _forKey,
-      child: Column(
-        children: [
-          const Text(
-              "Please provide your botId and chatId to receive your ip address !!!",
-              style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _botIdController,
-            decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.only(left: 20, top: 16, bottom: 16),
-              hintText: "BotId",
-              border: OutlineInputBorder(
-                  borderSide: const BorderSide(),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            controller: _chatIdController,
-            decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.only(left: 20, top: 16, bottom: 16),
-              hintText: "ChatId",
-              border: OutlineInputBorder(
-                  borderSide: const BorderSide(),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
-          const SizedBox(height: 10),
-          _buildActions(context)
-        ],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      child: Form(
+        key: _forKey,
+        child: Wrap(
+          runSpacing: 10,
+          children: [
+            const Text(
+                "Please provide your botId and chatId to receive your ip address !!!",
+                style: TextStyle(fontSize: 16)),
+            _buildFields(),
+            _buildActions(context)
+          ],
+        ),
       ),
     );
   }
@@ -87,6 +67,9 @@ class _CredentialFormState extends State<CredentialForm> {
     return Row(
       children: [
         OutlinedButton(
+            style: const ButtonStyle(
+                padding: MaterialStatePropertyAll(
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 16))),
             onPressed: () => Navigator.of(context).pop(),
             child: const Text(
               "Cancel",
@@ -97,12 +80,46 @@ class _CredentialFormState extends State<CredentialForm> {
         ),
         ElevatedButton(
             style: const ButtonStyle(
+                padding: MaterialStatePropertyAll(
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 16)),
                 backgroundColor: MaterialStatePropertyAll(Colors.black)),
             onPressed: _onSaveButtonPressed,
             child: const Text(
               "Save",
               style: TextStyle(color: Colors.white),
             ))
+      ],
+    );
+  }
+
+  Column _buildFields() {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _botIdController,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(left: 10),
+            hintText: "enter your bot id",
+            hintStyle: const TextStyle(fontSize: 14),
+            border: OutlineInputBorder(
+                borderSide: const BorderSide(),
+                borderRadius: BorderRadius.circular(5)),
+          ),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        TextFormField(
+          controller: _chatIdController,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(left: 10),
+            hintText: "enter your chat id",
+            hintStyle: const TextStyle(fontSize: 14),
+            border: OutlineInputBorder(
+                borderSide: const BorderSide(),
+                borderRadius: BorderRadius.circular(5)),
+          ),
+        ),
       ],
     );
   }

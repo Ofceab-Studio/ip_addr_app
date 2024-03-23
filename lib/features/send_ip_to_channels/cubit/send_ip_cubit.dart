@@ -53,6 +53,7 @@ class SendIpCubit extends Cubit<SendIpState> {
           ? "${ChannelsMessages.formSendButtonClicked.message} $ipAddr"
           : "${ChannelsMessages.fromConnectionListener.message} $ipAddr")
       ..addNormalText("\n")
+      ..addNormalText("\n")
       ..addNormalText("Don't forget the awesome shortcut 👇")
       ..addCodeText("adb connect $ipAddr:5555");
 
