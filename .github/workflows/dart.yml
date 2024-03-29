@@ -20,7 +20,7 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Test de l'application IP a demaré ... !!!\nBranch ${{ github.base_ref }} par @${{ github.actor }}" 
+          message: "Le Test de l'application IP a demaré ... !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}" 
 
       - uses: actions/checkout@v3
 
@@ -62,7 +62,7 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Test du nouveau commit sur la branch ${{ github.base_ref }} par @${{ github.actor }} est passé 🥳 !!!\Le build est en cour ..."
+          message: "Le Test du nouveau commit sur la branch ${{ github.head_ref }} par @${{ github.actor }} est passé 🥳 !!!\Le build est en cour ..."
 
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
@@ -75,7 +75,7 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Build de l'application IP a reussi 😎 !!!\nBranche ${{ github.base_ref }} par @${{ github.actor }}"
+          message: "Le Build de l'application IP a reussi 😎 !!!\nBranche ${{ github.head_ref }} par @${{ github.actor }}"
       - name: Send apk
         run: curl -F document=@build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "https://api.telegram.org/bot${{ secrets.TOKEN }}/sendDocument?chat_id=${{ secrets.CHATID }}"                            
               
@@ -102,4 +102,4 @@ jobs:
         with:
           to: ${{ secrets.CHATID }}
           token: ${{ secrets.TOKEN }}
-          message: "Le Build de l'application IP a echoué 😔 !!!\nBranch ${{ github.base_ref }} par @${{ github.actor }}"            
+          message: "Le Build de l'application IP a echoué 😔 !!!\nBranch ${{ github.head_ref }} par @${{ github.actor }}"            

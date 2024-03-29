@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +37,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     _isDisable.dispose();
+    _ipAddr.dispose();
     super.dispose();
   }
 
@@ -143,38 +146,42 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildSender(BuildContext context) {
+    log(_ipAddr.value);
+    if (_ipAddr.value.isEmpty) {
+      return const Text("Empty");
+    }
     return SenderWidget(
       ipAddr: _ipAddr.value,
     );
   }
 
-  Wrap _buildIpAddrWithActions() {
-    return Wrap(
-      runSpacing: 5,
-      children: <Widget>[
-        BlocBuilder<IpAddrCubit, IpAddrState>(
-          builder: (context, state) {
-            if (state is IpAddrInitialState || state is IpAddrIsProcessing) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.black,
-                ),
-              );
-            } else if (state is IpAddrDone) {
-              _ipAddr.value = state.ipAddr;
-              return Center(
+  BlocBuilder _buildIpAddrWithActions() {
+    return BlocBuilder<IpAddrCubit, IpAddrState>(
+      builder: (context, state) {
+        if (state is IpAddrInitialState || state is IpAddrIsProcessing) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          );
+        } else if (state is IpAddrDone) {
+          _ipAddr.value = state.ipAddr;
+          return Center(
+              child: Column(
+            children: [
+              Center(
                 child: _buildIpAddr(context),
-              );
-            } else if (state is IpAddrFailed) {
-              return const Center(
-                child: Text("Something wrong"),
-              );
-            }
-            return _buildActions(context);
-          },
-        ),
-        _buildActions(context)
-      ],
+              ),
+              _buildActions(context)
+            ],
+          ));
+        } else if (state is IpAddrFailed) {
+          return const Center(
+            child: Text("Something wrong"),
+          );
+        }
+        return const Text("...");
+      },
     );
   }
 }
