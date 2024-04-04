@@ -568,11 +568,10 @@ packages:
   loggme:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "3101b00373e9c508cbb86be778e7fbf0d7cd286c"
-      url: "https://github.com/Ofceab-Studio/loggme.git"
-    source: git
+      name: loggme
+      sha256: c45bd0844778037908594d506e9a0d8ff2fd64dcbbf2cc00fa1b0918c9e3f854
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.6"
   matcher:
     dependency: transitive

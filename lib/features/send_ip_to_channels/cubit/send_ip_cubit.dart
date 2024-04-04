@@ -55,7 +55,7 @@ class SendIpCubit extends Cubit<SendIpState> {
       ..addNormalText("\n")
       ..addNormalText("\n")
       ..addNormalText("Don't forget the awesome shortcut 👇")
-      ..addCodeText("adb connect $ipAddr:5555");
+      ..addCodeText("adb connect $ipAddr:5555", language: 'shell');
 
     await senderModule.send(botId: botId, chatId: chatId, message: message);
   }
