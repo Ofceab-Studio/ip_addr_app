@@ -49,12 +49,10 @@ dependencies:
   dartz: ^0.10.1
   connectivity_plus: ^5.0.2
   flutter_local_notifications: ^16.2.0
-  loggme: 
-    git:
-      url: https://github.com/Ofceab-Studio/loggme.git
   shared_preferences: ^2.2.2
   encrypt: ^5.0.3
   device_preview: ^1.1.0
+  loggme: ^1.0.6
   yaml_edit: ^2.2.0
 
 dev_dependencies:
