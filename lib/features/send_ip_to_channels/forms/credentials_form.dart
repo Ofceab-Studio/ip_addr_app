@@ -37,7 +37,7 @@ class _CredentialFormState extends State<CredentialForm> {
           runSpacing: 10,
           children: [
             const Text(
-                "Please provide your botId and chatId to receive your ip address !!!",
+                "Please provide your BotID and ChatID to receive your ip address !!!",
                 style: TextStyle(fontSize: 16)),
             _buildFields(),
             _buildActions(context)
@@ -99,7 +99,7 @@ class _CredentialFormState extends State<CredentialForm> {
           controller: _botIdController,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(left: 10),
-            hintText: "enter your bot id",
+            hintText: "BotID",
             hintStyle: const TextStyle(fontSize: 14),
             border: OutlineInputBorder(
                 borderSide: const BorderSide(),
@@ -113,7 +113,7 @@ class _CredentialFormState extends State<CredentialForm> {
           controller: _chatIdController,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(left: 10),
-            hintText: "enter your chat id",
+            hintText: "ChatID",
             hintStyle: const TextStyle(fontSize: 14),
             border: OutlineInputBorder(
                 borderSide: const BorderSide(),
