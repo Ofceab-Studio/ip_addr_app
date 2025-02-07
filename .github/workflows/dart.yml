@@ -13,7 +13,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cirruslabs/flutter:latest
+      image: ghcr.io/cirruslabs/flutter:3.13.9
 
     steps:
       - uses: appleboy/telegram-action@master
