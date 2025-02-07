@@ -34,15 +34,17 @@ extension GetItInjectableX on _i1.GetIt {
     final connectivityInitializer = _$ConnectivityInitializer();
     final storageParams = _$StorageParams();
     gh.singleton<_i3.Connectivity>(
-      connectivityInitializer.conn,
+      () => connectivityInitializer.conn,
       instanceName: 'conn',
     );
-    gh.singleton<_i4.INetworkModule>(_i4.NetWorkModule());
-    gh.singleton<_i5.INotificationModule>(_i5.LocalNotificationModule());
+    gh.singleton<_i4.INetworkModule>(() => _i4.NetWorkModule());
+    gh.singleton<_i5.INotificationModule>(() => _i5.LocalNotificationModule());
     gh.lazySingleton<_i6.ISenderModule>(() => _i6.LoggmeAsSender());
     gh.lazySingleton<_i7.IStorageHelper>(() => _i7.StorageHelper());
-    gh.singleton<_i8.IpAddrCubit>(_i8.IpAddrCubit(gh<_i4.INetworkModule>()));
-    gh.singleton<_i9.SendIpCubit>(_i9.SendIpCubit(gh<_i6.ISenderModule>()));
+    gh.singleton<_i8.IpAddrCubit>(
+        () => _i8.IpAddrCubit(gh<_i4.INetworkModule>()));
+    gh.singleton<_i9.SendIpCubit>(
+        () => _i9.SendIpCubit(gh<_i6.ISenderModule>()));
     gh.factory<String>(
       () => storageParams.botId,
       instanceName: 'botId',

@@ -68,7 +68,7 @@ class _CredentialFormState extends State<CredentialForm> {
       children: [
         OutlinedButton(
             style: const ButtonStyle(
-                padding: MaterialStatePropertyAll(
+                padding: WidgetStatePropertyAll(
                     EdgeInsets.symmetric(vertical: 16, horizontal: 16))),
             onPressed: () => Navigator.of(context).pop(),
             child: const Text(
@@ -80,9 +80,9 @@ class _CredentialFormState extends State<CredentialForm> {
         ),
         ElevatedButton(
             style: const ButtonStyle(
-                padding: MaterialStatePropertyAll(
+                padding: WidgetStatePropertyAll(
                     EdgeInsets.symmetric(vertical: 16, horizontal: 16)),
-                backgroundColor: MaterialStatePropertyAll(Colors.black)),
+                backgroundColor: WidgetStatePropertyAll(Colors.black)),
             onPressed: _onSaveButtonPressed,
             child: const Text(
               "Save",
