@@ -16,11 +16,6 @@ jobs:
       image: ghcr.io/cirruslabs/flutter:3.27.1
 
     steps:
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
       - uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.CHATID }}
@@ -61,6 +56,11 @@ jobs:
           message: "Le Test du nouveau commit sur la branch ${{ github.head_ref }} par @${{ github.actor }} est passé 🥳 !!!\Le build est en cour ..."
 
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
       - name: Increment apk version
