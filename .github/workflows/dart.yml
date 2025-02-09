@@ -16,6 +16,11 @@ jobs:
       image: ghcr.io/cirruslabs/flutter:3.27.1
 
     steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.CHATID }}
