@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +43,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 30),
         child: Column(
@@ -146,7 +146,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildSender(BuildContext context) {
-    log(_ipAddr.value);
     if (_ipAddr.value.isEmpty) {
       return const Text("Empty");
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ip_addr_show/core/extensions/context_extension.dart';
 import 'package:ip_addr_show/di.dart';
-import 'package:ip_addr_show/features/ip_addr/widgets/snack_widget.dart';
 import 'package:ip_addr_show/features/send_ip_to_channels/cubit/send_ip_cubit.dart';
 
 class CredentialForm extends StatefulWidget {
@@ -14,33 +14,36 @@ class _CredentialFormState extends State<CredentialForm> {
   final GlobalKey<FormState> _forKey = GlobalKey<FormState>();
   final TextEditingController _botIdController = TextEditingController();
   final TextEditingController _chatIdController = TextEditingController();
+  late final ValueNotifier<bool> _isReady;
 
   @override
   void initState() {
     super.initState();
+    _isReady = ValueNotifier(false);
   }
 
   @override
   void dispose() {
     _botIdController.dispose();
     _chatIdController.dispose();
+    _isReady.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       child: Form(
         key: _forKey,
         child: Wrap(
-          runSpacing: 10,
+          runSpacing: 16,
           children: [
             const Text(
                 "Please provide your BotID and ChatID to receive your ip address !!!",
                 style: TextStyle(fontSize: 16)),
             _buildFields(),
-            _buildActions(context)
+            _buildAction(context)
           ],
         ),
       ),
@@ -51,43 +54,38 @@ class _CredentialFormState extends State<CredentialForm> {
     if (_botIdController.text.isNotEmpty && _chatIdController.text.isNotEmpty) {
       await locator.get<SendIpCubit>().saveCredentials(
           botId: _botIdController.text, chatId: _chatIdController.text);
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snack(const Text("Credentials saved !!!")));
+      _onCredentialSuccessfulySaved();
     } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snack(const Text("BotID and ChatID can't be null")));
+      context.showSnackBar(const Text("BotID and ChatID can't be null"));
     }
   }
 
-  Row _buildActions(BuildContext context) {
+  void _onCredentialSuccessfulySaved() {
+    Navigator.of(context).pop();
+    context.showSnackBar(const Text("Credentials saved !!!"));
+  }
+
+  Widget _buildAction(BuildContext context) {
     return Row(
       children: [
-        OutlinedButton(
-            style: const ButtonStyle(
-                padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(vertical: 16, horizontal: 16))),
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              "Cancel",
-              style: TextStyle(color: Colors.black),
-            )),
-        const SizedBox(
-          width: 10,
+        Expanded(
+          child: ListenableBuilder(
+              listenable: _isReady,
+              builder: (context, _) {
+                return ElevatedButton(
+                    style: ButtonStyle(
+                        padding: const WidgetStatePropertyAll(
+                            EdgeInsets.symmetric(vertical: 16, horizontal: 16)),
+                        backgroundColor: WidgetStatePropertyAll(_isReady.value
+                            ? Colors.black
+                            : const Color.fromARGB(128, 158, 158, 158))),
+                    onPressed: _isReady.value ? _onSaveButtonPressed : null,
+                    child: const Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ));
+              }),
         ),
-        ElevatedButton(
-            style: const ButtonStyle(
-                padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(vertical: 16, horizontal: 16)),
-                backgroundColor: WidgetStatePropertyAll(Colors.black)),
-            onPressed: _onSaveButtonPressed,
-            child: const Text(
-              "Save",
-              style: TextStyle(color: Colors.white),
-            ))
       ],
     );
   }
@@ -96,6 +94,7 @@ class _CredentialFormState extends State<CredentialForm> {
     return Column(
       children: [
         TextFormField(
+          onChanged: (value) => _validateForm(),
           controller: _botIdController,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(left: 10),
@@ -110,6 +109,7 @@ class _CredentialFormState extends State<CredentialForm> {
           height: 5,
         ),
         TextFormField(
+          onChanged: (value) => _validateForm(),
           controller: _chatIdController,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(left: 10),
@@ -122,5 +122,10 @@ class _CredentialFormState extends State<CredentialForm> {
         ),
       ],
     );
+  }
+
+  void _validateForm() {
+    _isReady.value =
+        _botIdController.text.isNotEmpty && _chatIdController.text.isNotEmpty;
   }
 }

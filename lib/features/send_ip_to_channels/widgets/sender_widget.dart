@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:ip_addr_show/core/extensions/context_extension.dart';
 import 'package:ip_addr_show/di.dart';
-import 'package:ip_addr_show/features/ip_addr/widgets/snack_widget.dart';
 import 'package:ip_addr_show/features/send_ip_to_channels/cubit/send_ip_cubit.dart';
-import 'package:ip_addr_show/features/send_ip_to_channels/widgets/credentials_dialog.dart';
+import 'package:ip_addr_show/features/send_ip_to_channels/forms/credentials_form.dart';
 
-class SenderWidget extends StatelessWidget {
+class SenderWidget extends StatefulWidget {
   final String ipAddr;
   const SenderWidget({super.key, required this.ipAddr});
 
+  @override
+  State<SenderWidget> createState() => _SenderWidgetState();
+}
+
+class _SenderWidgetState extends State<SenderWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -24,19 +29,23 @@ class SenderWidget extends StatelessWidget {
   }
 
   Future<void> _sendToMe() async {
-    await locator.get<SendIpCubit>().sendIpToChannels(ipAddr: ipAddr);
+    await locator.get<SendIpCubit>().sendIpToChannels(ipAddr: widget.ipAddr);
   }
 
   Future<void> _onTelegramButtonTaped(BuildContext context) async {
     final credentials = await locator.get<SendIpCubit>().verifyCredentials();
     if (credentials) {
+      _showSendingMessage();
       await _sendToMe();
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snack(const Text("Sending your ip address ...")));
     } else {
-      // ignore: use_build_context_synchronously
-      await showCredentialsDialog(context);
+      _showCredentialsForm();
     }
+  }
+
+  void _showSendingMessage() =>
+      context.showSnackBar(const Text('Sending your ip address ...'));
+
+  void _showCredentialsForm() {
+    context.showModal(const CredentialForm());
   }
 }

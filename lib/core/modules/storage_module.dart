@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:encrypt/encrypt.dart';
 import 'package:injectable/injectable.dart';
 import 'package:ip_addr_show/di.dart';
@@ -33,8 +32,6 @@ class StorageHelper implements IStorageHelper {
   Future<bool> makeVerification() async {
     final chatId = await getData(isChatId: true);
     final botId = await getData(isChatId: false);
-    log(chatId.toString());
-    log(botId.toString());
     if (chatId != null &&
         botId != null &&
         chatId.isNotEmpty &&

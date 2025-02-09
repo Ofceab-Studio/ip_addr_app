@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -32,7 +31,6 @@ class SendIpCubit extends Cubit<SendIpState> {
     try {
       if (await verifyCredentials()) {
         emit(CredentialDone());
-        // Get Credentials
         final botId =
             await locator.get<IStorageHelper>().getData(isChatId: false);
         final chatId =
@@ -61,15 +59,12 @@ class SendIpCubit extends Cubit<SendIpState> {
   }
 
   Future<bool> verifyCredentials() async {
-    log("Verifing credentials");
     final result = await locator.get<IStorageHelper>().makeVerification();
-    log(result.toString());
     return result;
   }
 
   Future<void> saveCredentials(
       {required String botId, required String chatId}) async {
-    log("Start saving credentials");
     await locator.get<IStorageHelper>().saveData(botId, true);
     await locator.get<IStorageHelper>().saveData(chatId, false);
   }

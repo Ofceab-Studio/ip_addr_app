@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:ip_addr_show/core/extensions/context_extension.dart';
@@ -33,8 +34,8 @@ Future<void> initializeLocalNotification() async {
       initializationSettings,
     );
   } else {
-    navKey.currentContext
-        ?.showSnackBar("Unable to initialize local notification plugin");
+    navKey.currentContext?.showSnackBar(
+        const Text("Unable to initialize local notification plugin"));
   }
 }
 
